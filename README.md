@@ -10,6 +10,9 @@ Build and install the artifact in your local repository:
 
 `mvn clean install`
 
+Note: you need at least JDK 7 to build and execute the tests in this project. However the resulting JAR
+ can be used with JDK 1.5+.
+
 ## Add the dependency in your pom.xml
     <dependency>
         <groupId>com.github.vbekiaris</groupId>

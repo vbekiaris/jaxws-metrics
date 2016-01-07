@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:jax="http://jaxwsmetrics.vbekiaris.github.com/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <jax:echoWithFault>
+            <input>test</input>
+        </jax:echoWithFault>
+    </soapenv:Body>
+</soapenv:Envelope>
