@@ -1,18 +1,11 @@
 package com.github.vbekiaris.jaxwsmetrics;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
-
 import javax.xml.namespace.QName;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPException;
@@ -25,8 +18,15 @@ import javax.xml.ws.soap.SOAPFaultException;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  *
@@ -77,6 +77,24 @@ public class MetricsHandlerTest
         }
         SortedMap<String, Timer> timers = metricRegistry.getTimers();
         assertTrue(timers != null && timers.containsKey("{http://jaxwsmetrics.vbekiaris.github.com/}echoWithFault"));
+    }
+
+    @org.testng.annotations.Test
+    public void testInvalidOperation() throws Exception {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost post = new HttpPost(address);
+        post.setHeader("Content-type", "text/xml");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("echoservice-soap-message-invalid-op.xml");
+        post.setEntity(new InputStreamEntity(is));
+
+        CloseableHttpResponse response = httpClient.execute(post);
+
+        SortedMap<String, Timer> timers = metricRegistry.getTimers();
+        assertEquals(response.getStatusLine().getStatusCode(), 500);
+        assertTrue(timers != null && timers.containsKey("OPERATION_NOT_AVAILABLE"));
+
+        response.close();
+        httpClient.close();
     }
 
     private SOAPMessage sendSoapMessage(String resourcePath) throws SOAPException, IOException {

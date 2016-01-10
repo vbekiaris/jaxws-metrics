@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:jax="http://jaxwsmetrics.vbekiaris.github.com/">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <jax:echo1>
+            <invalid>no such operation exists</invalid>
+        </jax:echo1>
+    </soapenv:Body>
+</soapenv:Envelope>
